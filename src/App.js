@@ -1,8 +1,6 @@
-import {
-  RouterProvider,
-  createBrowserRouter,
-  Navigate,
-} from "react-router-dom";
+import { RouterProvider, createBrowserRouter } from "react-router-dom";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 
 import GlobalStyles from "./styles/GlobalStyles";
 import Dashboard from "./pages/Dashboard";
@@ -17,13 +15,13 @@ import AppLayout from "./ui/AppLayout";
 
 const router = createBrowserRouter([
   {
-    path: "/",
+    // path: "/",
     element: <AppLayout></AppLayout>,
     errorElement: <PageNotFound></PageNotFound>,
     children: [
       {
-        index: true,
-        path: "dashboard",
+        // index: true,
+        path: "/",
         element: <Dashboard></Dashboard>,
       },
       {
@@ -54,12 +52,21 @@ const router = createBrowserRouter([
   },
 ]);
 
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      staleTime: 60 * 1000,
+    },
+  },
+});
+
 function App() {
   return (
-    <>
+    <QueryClientProvider client={queryClient}>
+      <ReactQueryDevtools initialIsOpen={false}></ReactQueryDevtools>
       <GlobalStyles />
       <RouterProvider router={router}></RouterProvider>
-    </>
+    </QueryClientProvider>
   );
 }
 
